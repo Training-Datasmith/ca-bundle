@@ -1,9 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Composer\CaBundle;
 
-use Psr\Log\LoggerInterface;
-use Symfony\Component\Process\PhpProcess;
 use PHPUnit\Framework\TestCase;
 
 class CaBundleTest extends TestCase

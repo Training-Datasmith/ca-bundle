@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of composer/ca-bundle.
  *
@@ -12,7 +14,6 @@
 namespace Composer\CaBundle;
 
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Process\PhpProcess;
 
 /**
  * @author Chris Smith <chris@cs278.org>
@@ -137,7 +138,7 @@ class CaBundle
                 file_get_contents($caBundleFile)
             );
 
-            register_shutdown_function(function() use ($tempCaBundleFile): void {
+            register_shutdown_function(function () use ($tempCaBundleFile): void {
                 @unlink($tempCaBundleFile);
             });
 
@@ -166,7 +167,7 @@ class CaBundle
         $contents = file_get_contents($filename);
 
         if (is_string($contents) && strlen($contents) > 0) {
-            $contents = preg_replace("/^(\\-+(?:BEGIN|END))\\s+TRUSTED\\s+(CERTIFICATE\\-+)\$/m", '$1 $2', $contents);
+            $contents = preg_replace('/^(\\-+(?:BEGIN|END))\\s+TRUSTED\\s+(CERTIFICATE\\-+)$/m', '$1 $2', $contents);
             if (null === $contents) {
                 // regex extraction failed
                 $isValid = false;
@@ -286,14 +287,14 @@ class CaBundle
         $certs = glob($pattern);
         if ($certs === false) {
             if ($logger) {
-                $logger->debug(sprintf("An error occurred while trying to find certificates for pattern: %s", $pattern));
+                $logger->debug(sprintf('An error occurred while trying to find certificates for pattern: %s', $pattern));
             }
             return false;
         }
 
         if (count($certs) === 0) {
             if ($logger) {
-                $logger->debug(sprintf("No CA files found for pattern: %s", $pattern));
+                $logger->debug(sprintf('No CA files found for pattern: %s', $pattern));
             }
             return false;
         }
