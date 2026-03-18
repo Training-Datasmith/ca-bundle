@@ -23,7 +23,7 @@ class CaBundle
     /** @var string|null */
     private static $caPath;
     /** @var array<string, bool> */
-    private static $caFileValidity = array();
+    private static $caFileValidity = [];
 
     /**
      * Returns the system CA bundle path, or a path to the bundled one
@@ -67,7 +67,7 @@ class CaBundle
         if (self::$caPath !== null) {
             return self::$caPath;
         }
-        $caBundlePaths = array();
+        $caBundlePaths = [];
 
         // If SSL_CERT_FILE env variable points to a valid certificate/bundle, use that.
         // This mimics how OpenSSL uses the SSL_CERT_FILE env variable.
@@ -80,7 +80,7 @@ class CaBundle
         $caBundlePaths[] = ini_get('openssl.cafile');
         $caBundlePaths[] = ini_get('openssl.capath');
 
-        $otherLocations = array(
+        $otherLocations = [
             '/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem', // Fedora, RHEL, CentOS (ca-certificates package) - NEW
             '/etc/pki/tls/certs/ca-bundle.crt', // Fedora, RHEL, CentOS (ca-certificates package) - Deprecated
             '/etc/ssl/certs/ca-certificates.crt', // Debian, Ubuntu, Gentoo, Arch Linux (ca-certificates package)
@@ -96,7 +96,7 @@ class CaBundle
             '/opt/homebrew/etc/openssl@1.1/cert.pem', // macOS silicon homebrew, openssl@1.1 package
             '/etc/pki/tls/certs',
             '/etc/ssl/certs', // FreeBSD
-        );
+        ];
 
         $caBundlePaths = array_merge($caBundlePaths, $otherLocations);
 
@@ -120,7 +120,7 @@ class CaBundle
      *
      * @return string path to a CA bundle file
      */
-    public static function getBundledCaBundlePath()
+    public static function getBundledCaBundlePath(): string
     {
         $caBundleFile = __DIR__.'/../res/cacert.pem';
 
@@ -137,7 +137,7 @@ class CaBundle
                 file_get_contents($caBundleFile)
             );
 
-            register_shutdown_function(function() use ($tempCaBundleFile) {
+            register_shutdown_function(function() use ($tempCaBundleFile): void {
                 @unlink($tempCaBundleFile);
             });
 
@@ -189,29 +189,25 @@ class CaBundle
      *
      * This checks if OpenSSL extensions is vulnerable to remote code execution
      * via the exploit documented as CVE-2013-6420.
-     *
-     * @return bool
      */
-    public static function isOpensslParseSafe()
+    public static function isOpensslParseSafe(): bool
     {
         return true;
     }
 
     /**
      * Resets the static caches
-     * @return void
      */
-    public static function reset()
+    public static function reset(): void
     {
-        self::$caFileValidity = array();
+        self::$caFileValidity = [];
         self::$caPath = null;
     }
 
     /**
-     * @param  string $name
      * @return string|false
      */
-    private static function getEnvVariable($name)
+    private static function getEnvVariable(string $name)
     {
         if (isset($_SERVER[$name])) {
             return (string) $_SERVER[$name];
@@ -226,10 +222,8 @@ class CaBundle
 
     /**
      * @param  string|false $certFile
-     * @param  LoggerInterface|null $logger
-     * @return bool
      */
-    private static function caFileUsable($certFile, ?LoggerInterface $logger = null)
+    private static function caFileUsable($certFile, ?LoggerInterface $logger = null): bool
     {
         return $certFile
             && self::isFile($certFile, $logger)
@@ -239,10 +233,8 @@ class CaBundle
 
     /**
      * @param  string|false $certDir
-     * @param  LoggerInterface|null $logger
-     * @return bool
      */
-    private static function caDirUsable($certDir, ?LoggerInterface $logger = null)
+    private static function caDirUsable($certDir, ?LoggerInterface $logger = null): bool
     {
         return $certDir
             && self::isDir($certDir, $logger)
@@ -251,11 +243,9 @@ class CaBundle
     }
 
     /**
-     * @param  string $certFile
-     * @param  LoggerInterface|null $logger
      * @return bool
      */
-    private static function isFile($certFile, ?LoggerInterface $logger = null)
+    private static function isFile(string $certFile, ?LoggerInterface $logger = null)
     {
         $isFile = @is_file($certFile);
         if (!$isFile && $logger) {
@@ -266,11 +256,9 @@ class CaBundle
     }
 
     /**
-     * @param  string $certDir
-     * @param  LoggerInterface|null $logger
      * @return bool
      */
-    private static function isDir($certDir, ?LoggerInterface $logger = null)
+    private static function isDir(string $certDir, ?LoggerInterface $logger = null)
     {
         $isDir = @is_dir($certDir);
         if (!$isDir && $logger) {
@@ -281,11 +269,9 @@ class CaBundle
     }
 
     /**
-     * @param  string $certFileOrDir
-     * @param  LoggerInterface|null $logger
      * @return bool
      */
-    private static function isReadable($certFileOrDir, ?LoggerInterface $logger = null)
+    private static function isReadable(string $certFileOrDir, ?LoggerInterface $logger = null)
     {
         $isReadable = @is_readable($certFileOrDir);
         if (!$isReadable && $logger) {
@@ -295,12 +281,7 @@ class CaBundle
         return $isReadable;
     }
 
-    /**
-     * @param  string $pattern
-     * @param  LoggerInterface|null $logger
-     * @return bool
-     */
-    private static function glob($pattern, ?LoggerInterface $logger = null)
+    private static function glob(string $pattern, ?LoggerInterface $logger = null): bool
     {
         $certs = glob($pattern);
         if ($certs === false) {
