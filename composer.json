@@ -34,12 +34,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Composer\\CaBundle\\": "src"
+            "Composer\\Ca_Bundle\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Composer\\CaBundle\\": "tests"
+            "Composer\\Ca_Bundle\\": "tests"
         }
     },
     "extra": {
