@@ -59,7 +59,7 @@ class Ca_Bundle
      * @param  LoggerInterface $logger optional logger for information about which CA files were loaded
      * @return string          path to a CA bundle file or directory
      */
-    public static function get_system_ca_root_bundle_path(?Logger_Interface $logger = null)
+    public static function get_system_ca_root_bundle_path(?Logger_Interface $logger = null): string
     {
         if (self::$ca_path !== null) {
             return self::$ca_path;
@@ -141,14 +141,19 @@ class Ca_Bundle
         return $ca_bundle_file;
     }
     /**
-     * Validates a CA file using opensl_x509_parse only if it is safe to use
+     * Validates a CA file using openssl_x509_parse only if it is safe to use.
      *
-     * @param string          $filename
-     * @param LoggerInterface $logger   optional logger for information about which CA files were loaded
+     * Reads the file contents, strips "TRUSTED CERTIFICATE" markers that
+     * openssl_x509_parse() does not accept, and attempts to parse the first
+     * certificate. Results are cached per filename for the lifetime of the
+     * process; call {@see self::reset()} to clear the cache.
      *
-     * @return bool
+     * @param string               $filename path to the CA bundle file to validate
+     * @param Logger_Interface|null $logger   optional logger for validation debug output
+     *
+     * @return bool true if the file contains a valid X.509 certificate
      */
-    public static function validate_ca_file($filename, ?Logger_Interface $logger = null)
+    public static function validate_ca_file(string $filename, ?Logger_Interface $logger = null): bool
     {
         static $warned = false;
         if (isset(self::$ca_file_validity[$filename])) {
@@ -219,7 +224,7 @@ class Ca_Bundle
     /**
      * @return bool
      */
-    private static function is_file(string $cert_file, ?Logger_Interface $logger = null)
+    private static function is_file(string $cert_file, ?Logger_Interface $logger = null): bool
     {
         $is_file = @is_file($cert_file);
         if (!$is_file && $logger) {
@@ -230,7 +235,7 @@ class Ca_Bundle
     /**
      * @return bool
      */
-    private static function is_dir(string $cert_dir, ?Logger_Interface $logger = null)
+    private static function is_dir(string $cert_dir, ?Logger_Interface $logger = null): bool
     {
         $is_dir = @is_dir($cert_dir);
         if (!$is_dir && $logger) {
@@ -241,7 +246,7 @@ class Ca_Bundle
     /**
      * @return bool
      */
-    private static function is_readable(string $cert_file_or_dir, ?Logger_Interface $logger = null)
+    private static function is_readable(string $cert_file_or_dir, ?Logger_Interface $logger = null): bool
     {
         $is_readable = @is_readable($cert_file_or_dir);
         if (!$is_readable && $logger) {
