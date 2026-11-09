@@ -1,0 +1,3 @@
+FROM php@sha256:5249d94b4b00db63a0ed53e6528114926110ab5dcb0d0f07cc30d1ea7dbe747e
+
+WORKDIR /app

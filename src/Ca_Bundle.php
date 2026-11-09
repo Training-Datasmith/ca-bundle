@@ -11,7 +11,7 @@ declare (strict_types=1);
  */
 namespace Composer\Ca_Bundle;
 
-use Psr\Log\Logger_Interface;
+use Psr\Log\LoggerInterface;
 /**
  * @author Chris Smith <chris@cs278.org>
  * @author Jordi Boggiano <j.boggiano@seld.be>
@@ -59,7 +59,7 @@ class Ca_Bundle
      * @param  LoggerInterface $logger optional logger for information about which CA files were loaded
      * @return string          path to a CA bundle file or directory
      */
-    public static function get_system_ca_root_bundle_path(?Logger_Interface $logger = null): string
+    public static function get_system_ca_root_bundle_path(?LoggerInterface $logger = null): string
     {
         if (self::$ca_path !== null) {
             return self::$ca_path;
@@ -149,11 +149,11 @@ class Ca_Bundle
      * process; call {@see self::reset()} to clear the cache.
      *
      * @param string               $filename path to the CA bundle file to validate
-     * @param Logger_Interface|null $logger   optional logger for validation debug output
+     * @param LoggerInterface|null $logger   optional logger for validation debug output
      *
      * @return bool true if the file contains a valid X.509 certificate
      */
-    public static function validate_ca_file(string $filename, ?Logger_Interface $logger = null): bool
+    public static function validate_ca_file(string $filename, ?LoggerInterface $logger = null): bool
     {
         static $warned = false;
         if (isset(self::$ca_file_validity[$filename])) {
@@ -208,23 +208,23 @@ class Ca_Bundle
         return false;
     }
     /**
-     * @param  string|false $certFile
+     * @param  string|false $cert_file
      */
-    private static function ca_file_usable($cert_file, ?Logger_Interface $logger = null): bool
+    private static function ca_file_usable($cert_file, ?LoggerInterface $logger = null): bool
     {
         return $cert_file && self::is_file($cert_file, $logger) && self::is_readable($cert_file, $logger) && self::validate_ca_file($cert_file, $logger);
     }
     /**
-     * @param  string|false $certDir
+     * @param  string|false $cert_dir
      */
-    private static function ca_dir_usable($cert_dir, ?Logger_Interface $logger = null): bool
+    private static function ca_dir_usable($cert_dir, ?LoggerInterface $logger = null): bool
     {
         return $cert_dir && self::is_dir($cert_dir, $logger) && self::is_readable($cert_dir, $logger) && self::glob($cert_dir . '/*', $logger);
     }
     /**
      * @return bool
      */
-    private static function is_file(string $cert_file, ?Logger_Interface $logger = null): bool
+    private static function is_file(string $cert_file, ?LoggerInterface $logger = null): bool
     {
         $is_file = @is_file($cert_file);
         if (!$is_file && $logger) {
@@ -235,7 +235,7 @@ class Ca_Bundle
     /**
      * @return bool
      */
-    private static function is_dir(string $cert_dir, ?Logger_Interface $logger = null): bool
+    private static function is_dir(string $cert_dir, ?LoggerInterface $logger = null): bool
     {
         $is_dir = @is_dir($cert_dir);
         if (!$is_dir && $logger) {
@@ -246,7 +246,7 @@ class Ca_Bundle
     /**
      * @return bool
      */
-    private static function is_readable(string $cert_file_or_dir, ?Logger_Interface $logger = null): bool
+    private static function is_readable(string $cert_file_or_dir, ?LoggerInterface $logger = null): bool
     {
         $is_readable = @is_readable($cert_file_or_dir);
         if (!$is_readable && $logger) {
@@ -254,7 +254,7 @@ class Ca_Bundle
         }
         return $is_readable;
     }
-    private static function glob(string $pattern, ?Logger_Interface $logger = null): bool
+    private static function glob(string $pattern, ?LoggerInterface $logger = null): bool
     {
         $certs = glob($pattern);
         if ($certs === false) {

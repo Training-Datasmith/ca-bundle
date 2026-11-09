@@ -4,3 +4,4 @@ composer.lock
 build/
 report/
 .phpunit.result.cache
+.system-test/

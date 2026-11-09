@@ -2,121 +2,120 @@
 
 declare(strict_types=1);
 
-namespace Composer\CaBundle;
+namespace Composer\Ca_Bundle;
 
+use Composer\Ca_Bundle\Ca_Bundle;
 use PHPUnit\Framework\TestCase;
 
-class CaBundleTest extends TestCase
+class Ca_Bundle_Test extends TestCase
 {
-    public function testCaPath(): void
+    public function test_ca_path(): void
     {
-        $caBundle = new CaBundle();
-        $this->resetEnv();
-        $caPath = $caBundle::getSystemCaRootBundlePath(null);
+        $ca_bundle = new Ca_Bundle();
+        $this->reset_env();
+        $ca_path = $ca_bundle::get_system_ca_root_bundle_path(null);
 
-        $this->assertFileExists($caPath);
+        $this->assertFileExists($ca_path);
     }
 
-    public function testCaPathNotNull(): void
+    public function test_ca_path_not_null(): void
     {
-        $caBundle = new CaBundle();
-        $this->resetEnv();
-        $caPathNoNull = $caBundle::getSystemCaRootBundlePath(null);
+        $ca_bundle = new Ca_Bundle();
+        $this->reset_env();
+        $ca_path_no_null = $ca_bundle::get_system_ca_root_bundle_path(null);
 
-        $this->assertFileExists($caPathNoNull);
+        $this->assertFileExists($ca_path_no_null);
     }
 
-    public function testCertDir(): void
+    public function test_cert_dir(): void
     {
-        $caBundle = new CaBundle();
-        $caBundle::reset();
-        $certDir = 'SSL_CERT_DIR=';
-        $certPath = __DIR__.'/../res';
-        $this->resetEnv();
-        $this->setEnv($certDir.$certPath);
-        $sslCertDir = $caBundle::getSystemCaRootBundlePath(null);
+        $ca_bundle = new Ca_Bundle();
+        $ca_bundle::reset();
+        $cert_dir = 'SSL_CERT_DIR=';
+        $cert_path = __DIR__.'/../res';
+        $this->reset_env();
+        $this->set_env($cert_dir.$cert_path);
+        $ssl_cert_dir = $ca_bundle::get_system_ca_root_bundle_path(null);
 
-        $this->assertFileExists($sslCertDir);
+        $this->assertFileExists($ssl_cert_dir);
     }
 
-    public function testCertFile(): void
+    public function test_cert_file(): void
     {
-        $caBundle = new CaBundle();
-        $caBundle::reset();
-        $certFile = 'SSL_CERT_FILE=';
-        $certFilePath = __DIR__.'/../res/cacert.pem';
-        $this->resetEnv();
-        $this->setEnv($certFile.$certFilePath);
-        $sslCertFile = $caBundle::getSystemCaRootBundlePath(null);
+        $ca_bundle = new Ca_Bundle();
+        $ca_bundle::reset();
+        $cert_file = 'SSL_CERT_FILE=';
+        $cert_file_path = __DIR__.'/../res/cacert.pem';
+        $this->reset_env();
+        $this->set_env($cert_file.$cert_file_path);
+        $ssl_cert_file = $ca_bundle::get_system_ca_root_bundle_path(null);
 
-        $this->assertFileExists($sslCertFile);
+        $this->assertFileExists($ssl_cert_file);
     }
 
-    public function testSslCaFile(): void
+    public function test_ssl_ca_file(): void
     {
-        $sslCaFile = 'openssl.cafile';
-        $certFilePath = __DIR__.'/../res/cacert.pem';
-        ini_set($sslCaFile, $certFilePath);
-        $caBundle = new CaBundle();
-        $this->resetEnv();
-        $openCaFile = $caBundle::getSystemCaRootBundlePath(null);
+        $ssl_ca_file = 'openssl.cafile';
+        $cert_file_path = __DIR__.'/../res/cacert.pem';
+        ini_set($ssl_ca_file, $cert_file_path);
+        $ca_bundle = new Ca_Bundle();
+        $this->reset_env();
+        $open_ca_file = $ca_bundle::get_system_ca_root_bundle_path(null);
 
-        $this->assertFileExists($openCaFile);
+        $this->assertFileExists($open_ca_file);
     }
 
-    public function testSslCaPath(): void
+    public function test_ssl_ca_path(): void
     {
-        $caBundle = new CaBundle();
-        $sslCaPath = 'openssl.capath';
-        $certPath = __DIR__.'/../res';
-        $this->resetEnv();
-        ini_set($sslCaPath, $certPath);
-        $openCaPath = $caBundle::getSystemCaRootBundlePath(null);
+        $ca_bundle = new Ca_Bundle();
+        $ssl_ca_path = 'openssl.capath';
+        $cert_path = __DIR__.'/../res';
+        $this->reset_env();
+        ini_set($ssl_ca_path, $cert_path);
+        $open_ca_path = $ca_bundle::get_system_ca_root_bundle_path(null);
 
-        $this->assertFileExists($openCaPath);
+        $this->assertFileExists($open_ca_path);
     }
 
-    public function testValidateCaFile(): void
+    public function test_validate_ca_file(): void
     {
-        $certFilePath = __DIR__.'/../res/cacert.pem';
-        $caBundle = new CaBundle();
-        $validResult = $caBundle::validateCaFile($certFilePath, null);
+        $cert_file_path = __DIR__.'/../res/cacert.pem';
+        $ca_bundle = new Ca_Bundle();
+        $valid_result = $ca_bundle::validate_ca_file($cert_file_path, null);
 
-        $this->assertTrue($validResult);
+        $this->assertTrue($valid_result);
     }
 
-    public function testValidateTrustedCaFile(): void
+    public function test_validate_trusted_ca_file(): void
     {
-        $certFilePath = __DIR__.'/Fixtures/ca-bundle.trust.crt';
-        $caBundle = new CaBundle();
-        $validResult = $caBundle::validateCaFile($certFilePath, null);
+        $cert_file_path = __DIR__.'/Fixtures/ca-bundle.trust.crt';
+        $ca_bundle = new Ca_Bundle();
+        $valid_result = $ca_bundle::validate_ca_file($cert_file_path, null);
 
-        $this->assertTrue($validResult);
+        $this->assertTrue($valid_result);
     }
 
-    public function testOpenBaseDir(): void
+    public function test_open_base_dir(): void
     {
-        $oldValue = ini_get('open_basedir') ?: '';
+        $old_value = ini_get('open_basedir') ?: '';
         ini_set('open_basedir', dirname(__DIR__));
-        $certFilePath = CaBundle::getSystemCaRootBundlePath();
-        $validResult = CaBundle::validateCaFile($certFilePath, null);
-        $this->assertTrue($validResult);
-        ini_set('open_basedir', $oldValue);
+        $cert_file_path = Ca_Bundle::get_system_ca_root_bundle_path();
+        $valid_result = Ca_Bundle::validate_ca_file($cert_file_path, null);
+        $this->assertTrue($valid_result);
+        ini_set('open_basedir', $old_value);
     }
 
-    public function setEnv(string $envString): void
+    public function set_env(string $env_string): void
     {
-        putenv($envString);
+        putenv($env_string);
     }
 
-    public function resetEnv(): void
+    public function reset_env(): void
     {
-        $certDir = 'SSL_CERT_DIR=';
-        $certFile = 'SSL_CERT_FILE=';
-        $sslCaFile = 'openssl.cafile';
-        $sslCaPath = 'openssl.capath';
+        $cert_dir = 'SSL_CERT_DIR=';
+        $cert_file = 'SSL_CERT_FILE=';
 
-        $this->setEnv($certDir);
-        $this->setEnv($certFile);
+        $this->set_env($cert_dir);
+        $this->set_env($cert_file);
     }
 }
